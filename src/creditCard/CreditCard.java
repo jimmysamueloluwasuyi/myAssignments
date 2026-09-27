@@ -24,41 +24,46 @@ public class CreditCard {
     }
 
 
-    public void setCreditCardLength(long number) {
-
-        this.creditCardLength = number >= 1000000000000L && number <= 9999999999999999L;
+    public void setCreditCardLength(String number) {
+        this.creditCardLength = number.length() >= 13
+                && number.length() <= 16
+                && containsOnlyDigits(number);
     }
 
-    public void setCreditCardType(long number) {
+    private boolean containsOnlyDigits(String number) {
+        for (int index = 0; index < number.length(); index++) {
+            char character = number.charAt(index);
+            if (character < '0' || character > '9') {
+                return false;
+            }
+        }
+        return true;
+    }
 
-        String numberString = number + "";
-
-        if(numberString.charAt(0) == '4') {
+    public void setCreditCardType(String number) {
+        if (number.startsWith("4")) {
             creditCardType = "Visa Card";
         }
-        else if(numberString.charAt(0) == '5') {
+        else if (number.startsWith("5")) {
             creditCardType = "MasterCard";
         }
-        else if(numberString.charAt(0) == '3' && numberString.charAt(1) == '7') {
+        else if (number.startsWith("37")) {
             creditCardType = "American Express Card";
         }
-        else if(numberString.charAt(0) == '6') {
+        else if (number.startsWith("6")) {
             creditCardType = "Discover Card";
         }
-
+        else {
+            creditCardType = "Unknown Card";
+        }
     }
 
-    public void setSumOfSecondDigitsAndALlDigitsInOddPlaces(long number) {
-
-        String numberString = number + "";
-        String sumOfOddPlaces = number + "";
-        int result;
-
+    public void setSumOfSecondDigitsAndALlDigitsInOddPlaces(String number) {
         int sum = 0;
-        for(int index = numberString.length() - 2; index >= 0; index -= 2) {
-            int multiply = Character.getNumericValue(numberString.charAt(index)) * 2;
+        for (int index = number.length() - 2; index >= 0; index -= 2) {
+            int multiply = Character.getNumericValue(number.charAt(index)) * 2;
 
-            if(multiply > 9) {
+            if (multiply > 9) {
                 sum += (multiply - 9);
             }
             else {
@@ -67,20 +72,15 @@ public class CreditCard {
         }
 
         int sumOfOddNumbers = 0;
-        for(int index = sumOfOddPlaces.length() - 1; index >= 0; index -= 2) {
-            sumOfOddNumbers += Character.getNumericValue(sumOfOddPlaces.charAt(index));
+        for (int index = number.length() - 1; index >= 0; index -= 2) {
+            sumOfOddNumbers += Character.getNumericValue(number.charAt(index));
         }
 
-        result = sumOfOddNumbers + sum;
-
-        sumOfSecondDigitsAndALlDigitsInOddPlaces = result;
-
+        sumOfSecondDigitsAndALlDigitsInOddPlaces = sumOfOddNumbers + sum;
     }
 
-
     public void setCreditCardValidation() {
-
-        if(sumOfSecondDigitsAndALlDigitsInOddPlaces % 10 == 0) {
+        if (sumOfSecondDigitsAndALlDigitsInOddPlaces % 10 == 0) {
             creditCardValidation = "Valid";
         }
         else {
@@ -88,6 +88,4 @@ public class CreditCard {
         }
     }
 
-
 }
-

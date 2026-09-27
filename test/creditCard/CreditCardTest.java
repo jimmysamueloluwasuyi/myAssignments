@@ -16,43 +16,63 @@ public class CreditCardTest {
 
     @Test
     public void testThatTheGivenCreditCardIsNotAcceptedWhenItIs17Digit() {
-        myCreditCard.setCreditCardLength(43885760140262668L);
+        myCreditCard.setCreditCardLength("43885760140262668");
         assertFalse(myCreditCard.getCreditCardLength());
     }
 
     @Test
     public void testThatTheGivenCreditCardIsAcceptedWhenItIs16Digits() {
-        myCreditCard.setCreditCardLength(4388576018402626L);
+        myCreditCard.setCreditCardLength("4388576018402626");
         assertTrue(myCreditCard.getCreditCardLength());
     }
 
     @Test
     public void testThatTheGivenCreditCardIsAcceptedWhenItIs15Digits() {
-        myCreditCard.setCreditCardLength(438857601840262L);
+        myCreditCard.setCreditCardLength("438857601840262");
         assertTrue(myCreditCard.getCreditCardLength());
     }
 
     @Test
     public void testThatTheGivenCreditCardIsAcceptedWhenItIs14Digits() {
-        myCreditCard.setCreditCardLength(43885760184026L);
+        myCreditCard.setCreditCardLength("43885760184026");
         assertTrue(myCreditCard.getCreditCardLength());
     }
 
     @Test
     public void testThatTheGivenCreditCardIsAcceptedWhenItIs13Digits() {
-        myCreditCard.setCreditCardLength(4388576018402L);
+        myCreditCard.setCreditCardLength("4388576018402");
         assertTrue(myCreditCard.getCreditCardLength());
     }
 
     @Test
     public void testThatTheGivenCreditCardIsNotAcceptedWhenItIs12Digits() {
-        myCreditCard.setCreditCardLength(438857601840L);
+        myCreditCard.setCreditCardLength("438857601840");
+        assertFalse(myCreditCard.getCreditCardLength());
+    }
+
+    @Test
+    public void testThatAnEmptyCreditCardIsNotAccepted() {
+        myCreditCard.setCreditCardLength("");
+        assertFalse(myCreditCard.getCreditCardLength());
+    }
+
+    @Test
+    public void testThatACreditCardContainingLettersIsNotAccepted() {
+        myCreditCard.setCreditCardLength("43885760184a2626");
+        assertFalse(myCreditCard.getCreditCardLength());
+    }
+
+    @Test
+    public void testThatIfTheCreditCardIsANegativeNumberItWillNotBeAccepted() {
+        String number = "-69576018402626";
+
+        myCreditCard.setCreditCardLength(number);
         assertFalse(myCreditCard.getCreditCardLength());
     }
 
     @Test
     public void testThatTheCreditCardIsAcceptedIfItIsWithInTheRangeOf13To16_AndTheCreditCardIsAVisaCardBecauseItBeginsWith4() {
-        long number = 4388576018402626L;
+        String number = "4388576018402626";
 
         myCreditCard.setCreditCardLength(number);
         assertTrue(myCreditCard.getCreditCardLength());
@@ -63,7 +83,7 @@ public class CreditCardTest {
 
     @Test
     public void testThatTheCreditCardIsAcceptedIfItIsWithInTheRangeOf13To16_AndTheCreditCardIsAMasterCardBecauseItBeginsWith5() {
-        long number = 5388576018402626L;
+        String number = "5388576018402626";
 
         myCreditCard.setCreditCardLength(number);
         assertTrue(myCreditCard.getCreditCardLength());
@@ -74,7 +94,7 @@ public class CreditCardTest {
 
     @Test
     public void testThatTheCreditCardIsAcceptedIfItIsWithInTheRangeOf13To16_AndTheCreditCardIsAmericanExpressCardBecauseItBeginsWith37() {
-        long number = 37576018402626L;
+        String number = "37576018402626";
 
         myCreditCard.setCreditCardLength(number);
         assertTrue(myCreditCard.getCreditCardLength());
@@ -85,7 +105,7 @@ public class CreditCardTest {
 
     @Test
     public void testThatTheCreditCardIsAcceptedIfItIsWithInTheRangeOf13To16_AndTheCreditCardIsADiscoverCardBecauseItBeginsWith6() {
-        long number = 69576018402626L;
+        String number = "69576018402626";
 
         myCreditCard.setCreditCardLength(number);
         assertTrue(myCreditCard.getCreditCardLength());
@@ -95,16 +115,19 @@ public class CreditCardTest {
     }
 
     @Test
-    public void testThatIfTheCreditCardIsANegativeNumberItWillNotBeAccepted() {
-        long number = -69576018402626L;
+    public void testThatACreditCardWithAnUnsupportedFirstDigitIsUnknown() {
+        String number = "1388576018402626";
 
         myCreditCard.setCreditCardLength(number);
-        assertFalse(myCreditCard.getCreditCardLength());
+        assertTrue(myCreditCard.getCreditCardLength());
+
+        myCreditCard.setCreditCardType(number);
+        assertEquals("Unknown Card", myCreditCard.getCreditCardType());
     }
 
     @Test
     public void testThatTheCreditCardIsAcceptedIfItIsWithInTheRangeOf13To16_AndTheCreditCardTypeIsValidated_ThenIDoubleEverySecondDigitsFromRightToLeftIfItResultsToASingleNumber_AndSumAllTheFirstNumbersInTheOddPlaceFromRightToLeft_TheSumTheResult_AndReturnTheResult() {
-        long number = 4388576018402626L;
+        String number = "4388576018402626";
 
         myCreditCard.setCreditCardLength(number);
         assertTrue(myCreditCard.getCreditCardLength());
@@ -118,7 +141,7 @@ public class CreditCardTest {
 
     @Test
     public void testThatTheCreditCardIsAcceptedIfItIsWithInTheRangeOf13To16_AndTheCreditCardTypeIsValidated_AndISumAndConfirmIfTheCardIsAValidCardByIfItIsDivisibleBy10() {
-        long number = 4388576018402626L;
+        String number = "4388576018402626";
 
         myCreditCard.setCreditCardLength(number);
         assertTrue(myCreditCard.getCreditCardLength());
@@ -134,13 +157,29 @@ public class CreditCardTest {
 
     @Test
     public void testThatTheCreditCardIsAcceptedIfItIsWithInTheRangeOf13To16_AndTheCreditCardTypeIsValidated_AndISumAndConfirmIfTheCardIsAValidCardByIfItIsDivisibleBy10ByCheckingAValidNumber() {
-        long number = 4388576018410707L;
+        String number = "4388576018410707";
 
         myCreditCard.setCreditCardLength(number);
         assertTrue(myCreditCard.getCreditCardLength());
 
         myCreditCard.setCreditCardType(number);
         assertEquals("Visa Card", myCreditCard.getCreditCardType());
+
+        myCreditCard.setSumOfSecondDigitsAndALlDigitsInOddPlaces(number);
+
+        myCreditCard.setCreditCardValidation();
+        assertEquals("Valid", myCreditCard.getCreditCardValidation());
+    }
+
+    @Test
+    public void testThatAValid15DigitAmericanExpressCardPassesAllChecks() {
+        String number = "378282246310005";
+
+        myCreditCard.setCreditCardLength(number);
+        assertTrue(myCreditCard.getCreditCardLength());
+
+        myCreditCard.setCreditCardType(number);
+        assertEquals("American Express Card", myCreditCard.getCreditCardType());
 
         myCreditCard.setSumOfSecondDigitsAndALlDigitsInOddPlaces(number);
 
